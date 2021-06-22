@@ -4,7 +4,6 @@ namespace ControleDeTarefas.ConsoleApp
 {
     public class Contato : EntidadeBase
     {
-        public int id { get; set; }
         public string email { get; set; }
         public string nome { get; set; }
         public string telefone { get; set; }

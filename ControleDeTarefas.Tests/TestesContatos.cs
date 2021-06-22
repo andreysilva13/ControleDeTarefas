@@ -12,9 +12,9 @@ namespace ControleDeTarefas.Tests
         ControladorContato contato = new ControladorContato();
 
         [TestMethod]
-        public void DeveInserirUmContato()
+        public void DeveAtribuirUmContato()
         {
-            Contato c = new Contato("email", "telefone", "empresa", "administrador");
+            Contato c = new Contato("nome", "email", "telefone", "empresa", "administrador");
             contato.Inserir(c);
         }
 

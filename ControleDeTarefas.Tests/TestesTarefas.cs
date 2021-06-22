@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ControleDeTarefas.ConsoleApp.Controlador;
+using ControleDeTarefas.ConsoleApp.Dominio;
 using ControleDeTarefas.ConsoleApp;
-using System;
 using System.Collections.Generic;
 
 namespace ControleDeTarefas.Tests
@@ -11,14 +12,14 @@ namespace ControleDeTarefas.Tests
         ControladorTarefa tarefa = new ControladorTarefa();
 
         [TestMethod]
-        public void DeveInserirUmaTarefa()
+        public void DeveAtribuirUmaTarefa()
         {
             Tarefa t = new Tarefa("titulo", 2);
             tarefa.Inserir(t);
         }
 
         [TestMethod]
-        public void DeveSelecionarOsContatos()
+        public void DeveSelecionarAsTarefas()
         {
             bool b = false;
             List<Tarefa> a = tarefa.Visualizar();
@@ -30,7 +31,7 @@ namespace ControleDeTarefas.Tests
         }
 
         [TestMethod]
-        public void DeveEditarUmContato()
+        public void DeveEditarUmaTarefa()
         {
             Tarefa t = tarefa.SelecionarId(1);
             t.titulo = "titulo editado";
@@ -38,7 +39,7 @@ namespace ControleDeTarefas.Tests
         }
 
         [TestMethod]
-        public void DeveExcluirUmContato()
+        public void DeveExcluirUmaTarefa()
         {
             Tarefa t = tarefa.SelecionarId(1);
             int id = t.id;

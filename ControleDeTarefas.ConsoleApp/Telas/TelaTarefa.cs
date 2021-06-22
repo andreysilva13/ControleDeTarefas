@@ -73,8 +73,8 @@ namespace ControleDeTarefas.ConsoleApp
                 }
                 string opcao = "";
                 Console.Clear();
-                Console.WriteLine("Digite 1 para visualizar tarefas abertas");
-                Console.WriteLine("Digite 2 para visualizar tarefas fechadas");
+                Console.WriteLine("DIGITE 1 PARA VISUALIZAR TAREFAS ABERTAS");
+                Console.WriteLine("DIGITE 2 PARA VISUALIZAR TAREFAS FECHADAS");
                 opcao = Console.ReadLine();
                 while (true)
                 {
@@ -173,7 +173,7 @@ namespace ControleDeTarefas.ConsoleApp
             Console.Write("Digite a percentual da tarefa: ");
             item.percentual = Convert.ToInt32(Console.ReadLine());
 
-            if (item.percentual == 100)
+            if (item.percentual > 100)
             {   
                 controlador.FecharTarefa(item);
                 retorno = true;
@@ -208,8 +208,6 @@ namespace ControleDeTarefas.ConsoleApp
             int prioridade = Convert.ToInt32(Console.ReadLine());
 
             Tarefa tarefa = new Tarefa(titulo, prioridade);
-
-            controlador.Inserir(tarefa);
 
             string EhValido = tarefa.Validar();
 
