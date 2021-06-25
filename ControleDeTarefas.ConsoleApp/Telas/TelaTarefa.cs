@@ -55,7 +55,7 @@ namespace ControleDeTarefas.ConsoleApp
         public void Visualizar()
         {
             List<Tarefa> t = controlador.Visualizar();
-            if (t.Count > 1)
+            if (t.Count > 0)
             {
                 List<Tarefa> tarefasAbertas = new List<Tarefa>();
                 List<Tarefa> tarefasFechadas = new List<Tarefa>();

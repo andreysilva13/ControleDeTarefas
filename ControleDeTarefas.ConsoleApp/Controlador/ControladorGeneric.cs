@@ -50,7 +50,9 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
             comandoResetar.Connection = conexaoComBanco;
 
             string sqlResetaID = @"DELETE FROM TB_tarefas; 
-                                   DBCC CHECKIDENT('TB+tarefas', RESEED, 0);
+                                   DBCC CHECKIDENT('TB+tarefas', RESEED, 0)
+                                   DELETE FROM TB_compromisso; 
+                                   DBCC CHECKIDENT('TB_compromisso', RESEED, 0);
                                    DELETE FROM TB_contatos; 
                                    DBCC CHECKIDENT('TB_contatos', RESEED, 0)";
 

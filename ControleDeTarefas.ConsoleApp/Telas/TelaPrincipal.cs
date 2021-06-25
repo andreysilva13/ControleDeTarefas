@@ -6,6 +6,7 @@ namespace ControleDeTarefas.ConsoleApp.Telas
     {
         TelaTarefa telaTarefa = new TelaTarefa();
         TelaContato telaContato = new TelaContato();
+        TelaCompromisso telaCompromisso = new TelaCompromisso();
 
         public void ObterTelaPrincipal()
         {
@@ -57,6 +58,30 @@ namespace ControleDeTarefas.ConsoleApp.Telas
                             telaContato.ObterOpcao();
                     }
                 }
+                else if (opcao == "3")
+                {
+                    while (true)
+                    {
+                        string opcaoCompromissos = "";
+                        opcaoCompromissos = telaCompromisso.ObterOpcao();
+                        if (opcaoCompromissos == "1")
+                            telaCompromisso.Inserir();
+                        else if (opcaoCompromissos == "2")
+                        {
+                            Console.Clear();
+                            telaCompromisso.VisualizarRegistros();
+                            Console.ReadLine();
+                        }
+                        else if (opcaoCompromissos == "3")
+                            telaCompromisso.EditarRegistro();
+                        else if (opcaoCompromissos == "4")
+                            telaCompromisso.ExcluirRegistro();
+                        else if (opcaoCompromissos.Equals("s", StringComparison.OrdinalIgnoreCase))
+                            break;
+                        else if (opcaoCompromissos != "1" || opcaoCompromissos != "2" || opcaoCompromissos != "3" || opcaoCompromissos != "4")
+                            telaCompromisso.ObterOpcao();
+                    }
+                }
                 else if (opcao.Equals("s", StringComparison.OrdinalIgnoreCase))
                     break;
                 else if (opcao != "1" || opcao != "2" || opcao != "3" || opcao != "4")
@@ -71,6 +96,7 @@ namespace ControleDeTarefas.ConsoleApp.Telas
             Console.Clear();
             Console.WriteLine("DIGITE (1) PARA ENTRAR EM TAREFAS");
             Console.WriteLine("DIGITE (2) PARA ENTRAR EM CONTATOS");
+            Console.WriteLine("DIGITE (3) PARA ENTRAR EM COMPROMISSOS");
             opcao = Console.ReadLine();
 
             return opcao;

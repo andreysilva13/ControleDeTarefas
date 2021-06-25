@@ -162,8 +162,6 @@ namespace ControleDeTarefas.ConsoleApp.Telas
                 retorno = false;
             }
             return retorno;
-
-
         }
         private void ApresentarTabela(List<Contato> registros)
         {

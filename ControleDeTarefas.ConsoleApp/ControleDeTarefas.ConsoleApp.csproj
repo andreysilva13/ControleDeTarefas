@@ -43,14 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controlador\ControladorCompromisso.cs" />
     <Compile Include="Controlador\ControladorContato.cs" />
     <Compile Include="Controlador\ControladorGeneric.cs" />
+    <Compile Include="Dominio\Compromissos.cs" />
     <Compile Include="Dominio\Contato.cs" />
     <Compile Include="Controlador\ControladorTarefa.cs" />
     <Compile Include="Dominio\EntidadeBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Dominio\Tarefa.cs" />
+    <Compile Include="Telas\TelaCompromisso.cs" />
     <Compile Include="Telas\TelaContato.cs" />
     <Compile Include="Telas\TelaPrincipal.cs" />
     <Compile Include="Telas\TelaTarefa.cs" />
