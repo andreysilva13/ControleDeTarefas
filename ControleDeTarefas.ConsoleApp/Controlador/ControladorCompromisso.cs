@@ -41,19 +41,29 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
             comandoInsercao.CommandText = sqlInsercao;
 
             comandoInsercao.Parameters.AddWithValue("ASSUNTO", compromisso.assunto);
+            if (compromisso.local == null)
+                comandoInsercao.Parameters.AddWithValue("LUGAR", DBNull.Value);
+            else
             comandoInsercao.Parameters.AddWithValue("LUGAR", compromisso.local);
-            comandoInsercao.Parameters.AddWithValue("LINK", compromisso.link);
+
+            if (compromisso.link == null)
+                comandoInsercao.Parameters.AddWithValue("LINK", DBNull.Value);
+            else
+                comandoInsercao.Parameters.AddWithValue("LINK", compromisso.link);
+
             comandoInsercao.Parameters.AddWithValue("DATAINICIO", compromisso.dataInicio);
             comandoInsercao.Parameters.AddWithValue("DATATERMINO", compromisso.dataTermino);
-            comandoInsercao.Parameters.AddWithValue("CONTATO_ID", compromisso.idContato);
 
+            if (compromisso.idContato == null)
+                comandoInsercao.Parameters.AddWithValue("CONTATO_ID", DBNull.Value);        
+            else
+                comandoInsercao.Parameters.AddWithValue("CONTATO_ID", compromisso.idContato);
             object id = comandoInsercao.ExecuteScalar();
 
             compromisso.id = Convert.ToInt32(id);
 
             conexaoComBanco.Close();
         }
-
         public override void ObterEdicao(Compromissos compromisso)
         {
             SqlConnection conexaoComBanco = AbreConexaoComOBanco();
@@ -86,7 +96,6 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
 
             conexaoComBanco.Close();
         }
-
         public override void ObterExclusao(object tipo, int id)
         {
             SqlConnection conexaoComBanco = AbreConexaoComOBanco();
@@ -107,7 +116,6 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
 
             conexaoComBanco.Close();
         }
-
         public override List<Compromissos> ObterRegistros()
         {
             SqlConnection conexaoComBanco = AbreConexaoComOBanco();
@@ -126,7 +134,7 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
                         [NOME]
                     FROM 
                         TB_compromisso comp
-                    INNER JOIN TB_contatos con
+                    LEFT JOIN TB_contatos con
                     ON CONTATO_ID = con.ID";
 
             comandoSelecao.CommandText = sqlSelecao;
@@ -137,13 +145,24 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
 
             while (leitorCompromisso.Read())
             {
+                string lugar = "SEM LOCAL";
+                string link = "SEM LINK";
+                string nome = "SEM CONTATO";
+
                 int id = Convert.ToInt32(leitorCompromisso["ID"]);
                 string assunto = Convert.ToString(leitorCompromisso["ASSUNTO"]);
-                string lugar = Convert.ToString(leitorCompromisso["LUGAR"]);
-                string link = Convert.ToString(leitorCompromisso["LINK"]);
+
+                if (leitorCompromisso["LUGAR"] != DBNull.Value)
+                    lugar = Convert.ToString(leitorCompromisso["LUGAR"]);
+
+                if (leitorCompromisso["LINK"] != DBNull.Value)
+                    link = Convert.ToString(leitorCompromisso["LINK"]);
+
                 DateTime dataInicio = Convert.ToDateTime(leitorCompromisso["DATAINICIO"]);
                 DateTime dataTermino = Convert.ToDateTime(leitorCompromisso["DATATERMINO"]);
-                string nome = Convert.ToString(leitorCompromisso["NOME"]);
+
+                if (leitorCompromisso["NOME"] != DBNull.Value)
+                    nome = Convert.ToString(leitorCompromisso["NOME"]);
 
                 Compromissos comp = new Compromissos(assunto, lugar, link, dataInicio, dataTermino, nome);
                 comp.id = id;
@@ -154,7 +173,6 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
             conexaoComBanco.Close();
             return compromissos;
         }
-
         public override Compromissos ObterIdSelecionado(int id)
         {
             SqlConnection conexaoComBanco = AbreConexaoComOBanco();
@@ -182,13 +200,24 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
             if (leitorCompromisso.Read() == false)
                 return null;
 
+            string lugar = "SEM LOCAL";
+            string link = "SEM LINK";
+            int idContato = 0;
+
             int idC = Convert.ToInt32(leitorCompromisso["ID"]);
             string assunto = Convert.ToString(leitorCompromisso["ASSUNTO"]);
-            string lugar = Convert.ToString(leitorCompromisso["LUGAR"]);
-            string link = Convert.ToString(leitorCompromisso["LINK"]);
+
+            if (leitorCompromisso["LUGAR"] != DBNull.Value)
+                lugar = Convert.ToString(leitorCompromisso["LUGAR"]);
+
+            if (leitorCompromisso["LINK"] != DBNull.Value)
+                link = Convert.ToString(leitorCompromisso["LINK"]);
+
             DateTime dataInicio = Convert.ToDateTime(leitorCompromisso["DATAINICIO"]);
             DateTime dataTermino = Convert.ToDateTime(leitorCompromisso["DATATERMINO"]);
-            int idContato = Convert.ToInt32(leitorCompromisso["CONTATO_ID"]);
+
+            if (leitorCompromisso["CONTATO_ID"] != DBNull.Value)
+                idContato = Convert.ToInt32(leitorCompromisso["CONTATO_ID"]);
 
             Compromissos comp = new Compromissos(assunto, lugar, link, dataInicio, dataTermino, idContato);
             comp.id = idC;
@@ -197,7 +226,6 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
 
             return comp;
         }
-
         private static SqlConnection AbreConexaoComOBanco()
         {
             string enderecoDBEmpresa =
@@ -207,6 +235,47 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
             conexaoComBanco.ConnectionString = enderecoDBEmpresa;
             conexaoComBanco.Open();
             return conexaoComBanco;
+        }
+        public List<Compromissos> ObterCompromissoNoDia()
+        {
+            List<Compromissos> recebeLista = ObterRegistros();
+            List<Compromissos> listaNoDia = new List<Compromissos>();
+
+            foreach (var dia in recebeLista)
+            {
+                if (dia.dataInicio.Day == DateTime.Now.Day)
+                {
+                    listaNoDia.Add(dia);
+                }
+            }
+            return listaNoDia;
+        }
+        public List<Compromissos> ObterCompromissoNaSemana()
+        {
+            List<Compromissos> recebeLista = ObterRegistros();
+            List<Compromissos> listaNaSemana = new List<Compromissos>();
+
+            foreach (var semana in recebeLista)
+            {
+                if (semana.dataInicio <= DateTime.Today.AddDays(7) && semana.dataTermino.Date <= DateTime.Today.AddDays(7))
+                {
+                    listaNaSemana.Add(semana);
+                }
+            }
+            return listaNaSemana;
+        }  
+        public bool PodeMarcarEsteCompromisso(Compromissos compromisso)
+        {
+            List<Compromissos> todos = ObterRegistros();
+            bool pode = true;
+            foreach (var item in todos)
+            {
+                if (compromisso.dataInicio >= item.dataInicio && compromisso.dataInicio <= item.dataTermino)
+                    pode = false;
+                else
+                    pode = true;
+            }
+            return pode;
         }
     }
 }

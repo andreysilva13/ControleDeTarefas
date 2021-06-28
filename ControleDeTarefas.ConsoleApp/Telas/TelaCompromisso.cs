@@ -8,6 +8,7 @@ namespace ControleDeTarefas.ConsoleApp.Telas
     public class TelaCompromisso
     {
         ControladorCompromisso controlador = new ControladorCompromisso();
+        TelaContato telaContato = new TelaContato();
         public string ObterOpcao()
         {
             Console.Clear();
@@ -22,7 +23,6 @@ namespace ControleDeTarefas.ConsoleApp.Telas
 
             return opcao;
         }
-
         public void Inserir()
         {
             Console.Clear();
@@ -32,28 +32,42 @@ namespace ControleDeTarefas.ConsoleApp.Telas
 
             if (conseguiuGravar)
             {
-                Console.WriteLine("Contato inserido com sucesso");
+                Console.WriteLine("Compromisso inserido com sucesso");
                 Console.ReadLine();
             }
             else
             {
-                Console.WriteLine("Falha ao tentar inserir o contato");
+                Console.WriteLine("Falha ao tentar inserir o compromisso");
                 Console.ReadLine();
                 Inserir();
             }
         }
-
         public void VisualizarRegistros()
         {
-            List<Compromissos> c = controlador.Visualizar();
-            if (c.Count == 0)
+            List<Compromissos> todos = controlador.Visualizar();
+            List<Compromissos> dia = controlador.ObterCompromissoNoDia();
+            List<Compromissos> semana = controlador.ObterCompromissoNaSemana();
+            string opcao = "";
+            Console.WriteLine("Como você deseja visualizar seus compromissos?");
+            Console.WriteLine("(1) - HOJE / (2) - SEMANA / (3) - TODOS");
+            opcao = Console.ReadLine();
+
+            if (todos.Count == 0)
             {
                 Console.WriteLine("NENHUM COMPROMISSO ADICIONADO");
             }
-            else
+            else if (opcao == "1")
             {
-                ApresentarTabela(c);
+                ApresentarTabela(dia);
             }
+            else if (opcao == "2")
+            {
+                ApresentarTabela(semana);
+            }
+            else if (opcao == "3")
+            {
+                ApresentarTabela(todos);
+            }        
         }
         public void ExcluirRegistro()
         {
@@ -94,7 +108,6 @@ namespace ControleDeTarefas.ConsoleApp.Telas
             }
         }
 
-
         #region [metodos privados]
         private bool GravaEdicao(int idSelecionado)
         {
@@ -102,14 +115,26 @@ namespace ControleDeTarefas.ConsoleApp.Telas
 
             Compromissos item = controlador.SelecionarId(idSelecionado);
 
+            string link = "", local = "", opcao = "";
+            Console.WriteLine("Seu compromisso será pessoalmente ou remotamente?");
+            Console.WriteLine("(1) - PESSOALMENTE / (2) - REMOTAMENTE");
+            opcao = Console.ReadLine();
+
+            if (opcao == "1")
+            {
+                Console.Write("Digite o local do compromisso: ");
+                item.local = Console.ReadLine();
+                item.link = "";
+            }
+            else if (opcao == "2")
+            {
+                Console.Write("Digite o link do compromisso: ");
+                item.link = Console.ReadLine();
+                item.local = "";
+            }
+
             Console.Write("Digite o assunto do compromisso: ");
             item.assunto = Console.ReadLine();
-
-            Console.Write("Digite o email do compromisso: ");
-            item.local = Console.ReadLine();
-
-            Console.Write("Digite o link do compromisso: ");
-            item.link = Console.ReadLine();
 
             Console.Write("Digite a data de inicio do compromisso (EX: yyyy,mm,dd,hh,mm,ss): ");
             item.dataInicio = Convert.ToDateTime(Console.ReadLine());
@@ -139,15 +164,28 @@ namespace ControleDeTarefas.ConsoleApp.Telas
         private bool GravaCompromisso()
         {
             bool retorno;
+            string link = "", local = "", opcao = "";
+            int? idContato = null;
+            Console.WriteLine("Seu compromisso será pessoalmente ou remotamente?");
+            Console.WriteLine("(1) - PESSOALMENTE / (2) - REMOTAMENTE");
+            opcao = Console.ReadLine();
 
+            if (opcao == "1")
+            {
+                Console.Clear();
+                Console.Write("Digite o local do compromisso: ");
+                local = Console.ReadLine();
+                link = null;
+            }
+            else if (opcao == "2")
+            {
+                Console.Clear();
+                Console.Write("Digite o link do compromisso: ");
+                link = Console.ReadLine();
+                local = null;
+            }
             Console.Write("Digite o assunto do compromisso: ");
             string assunto = Console.ReadLine();
-
-            Console.Write("Digite o email do compromisso: ");
-            string local = Console.ReadLine();
-
-            Console.Write("Digite o link do compromisso: ");
-            string link = Console.ReadLine();
 
             Console.Write("Digite a data de inicio do compromisso (EX: yyyy/mm/dd hh:mm:ss): ");
             DateTime dataInicio = Convert.ToDateTime(Console.ReadLine());
@@ -155,14 +193,27 @@ namespace ControleDeTarefas.ConsoleApp.Telas
             Console.Write("Digite a data de termino do compromisso (EX: yyyy/mm/dd hh:mm:ss): ");
             DateTime dataTermino = Convert.ToDateTime(Console.ReadLine());
 
-            Console.Write("Digite o ID do contato: ");
-            int idContato = Convert.ToInt32(Console.ReadLine());
+            opcao = "";
+            Console.WriteLine("Este compromisso é com alguém da sua agenda?");
+            Console.WriteLine("(1) - SIM / (2) - NÃO");
+            opcao = Console.ReadLine();
+            if (opcao == "1")
+            {
+                Console.Clear();
+                telaContato.VisualizarRegistros();
+                Console.Write("Digite o ID do contato: ");
+                idContato = Convert.ToInt32(Console.ReadLine());
+            }
+            else if (opcao == "2")
+            {
+                idContato = null;
+            }
 
             Compromissos compromissos = new Compromissos(assunto, local, link, dataInicio, dataTermino, idContato);
 
-            string EhValido = "valido";
+            bool Valido = controlador.PodeMarcarEsteCompromisso(compromissos);
 
-            if (EhValido == "valido")
+            if (Valido)
             {
                 controlador.Inserir(compromissos);
                 retorno = true;
@@ -173,19 +224,17 @@ namespace ControleDeTarefas.ConsoleApp.Telas
             }
             return retorno;
         }
-
         private void ApresentarTabela(List<Compromissos> registros)
         {
-            string configuracaoColunasTabela = "{0,-10} | {1,-20} | {2,-20} | {3,-20} | {4,-20} | {5,-35}";
+            string configuracaoColunasTabela = "{0,-10} | {1,-15} | {2,-20} | {3,-20} | {4,-15}| {5,-15} | {6,-20}";
 
-            MontarCabecalhoTabela(configuracaoColunasTabela, "ID", "ASSUNTO", "LOCAL", "DATA INICIO", "DATA TERMINO", "NOME");
+            MontarCabecalhoTabela(configuracaoColunasTabela, "ID", "ASSUNTO", "LOCAL", "LINK", "DATA INICIO", "DATA TERMINO", "NOME");
 
             foreach (Compromissos a in registros)
             {
-                Console.WriteLine(configuracaoColunasTabela, a.id, a.assunto, a.local, a.dataInicio, a.dataTermino, a.nome);
+                Console.WriteLine(configuracaoColunasTabela, a.id, a.assunto, a.local, a.link, a.dataInicio, a.dataTermino, a.nome);
             }
         }
-
         private void MontarCabecalhoTabela(string configuracaoColunasTabela, params object[] colunas)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;

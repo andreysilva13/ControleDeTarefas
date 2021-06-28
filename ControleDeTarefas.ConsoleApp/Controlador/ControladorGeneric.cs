@@ -9,35 +9,29 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
         public ControladorGeneric()
         {
         }
-
         public void Inserir(T registro)
         {
             ObterInsert(registro);
         }
-
         public void Editar(T registro)
         {
             ObterEdicao(registro);
         }
-
         public void Excluir(int id)
         {
             object tipo = id.GetType();
             ObterExclusao(tipo, id);
         }
-
         public List<T> Visualizar()
         {
             List<T> lista = ObterRegistros();
             return lista;
         }
-
         public T SelecionarId(int id)
         {
             T item = ObterIdSelecionado(id);
             return item;
         }
-
         public abstract void ObterInsert(T registro);
         public abstract void ObterEdicao(T registro);
         public abstract void ObterExclusao(object tipo, int id);
@@ -59,7 +53,6 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
             comandoResetar.CommandText = sqlResetaID;
             comandoResetar.ExecuteScalar();
         }
-
         private static SqlConnection AbreConexaoComOBanco()
         {
             string enderecoDBEmpresa =
