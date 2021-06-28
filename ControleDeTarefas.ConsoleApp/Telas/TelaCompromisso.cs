@@ -226,7 +226,7 @@ namespace ControleDeTarefas.ConsoleApp.Telas
         }
         private void ApresentarTabela(List<Compromissos> registros)
         {
-            string configuracaoColunasTabela = "{0,-10} | {1,-15} | {2,-20} | {3,-20} | {4,-15}| {5,-15} | {6,-20}";
+            string configuracaoColunasTabela = "{0,-10} | {1,-15} | {2,-16} | {3,-16} | {4,-25}| {5,-25} | {6,-20}";
 
             MontarCabecalhoTabela(configuracaoColunasTabela, "ID", "ASSUNTO", "LOCAL", "LINK", "DATA INICIO", "DATA TERMINO", "NOME");
 

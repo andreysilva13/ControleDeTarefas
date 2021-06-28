@@ -257,7 +257,7 @@ namespace ControleDeTarefas.ConsoleApp.Controlador
 
             foreach (var semana in recebeLista)
             {
-                if (semana.dataInicio <= DateTime.Today.AddDays(7) && semana.dataTermino.Date <= DateTime.Today.AddDays(7))
+                if (semana.dataInicio.Date <= DateTime.Today.AddDays(7) && semana.dataTermino.Date <= DateTime.Today.AddDays(7) && semana.dataInicio.Date >= DateTime.Today)
                 {
                     listaNaSemana.Add(semana);
                 }
