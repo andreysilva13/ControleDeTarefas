@@ -15,16 +15,6 @@ namespace ControleDeTarefas.ConsoleApp.Dominio
         public DateTime dataInicio { get; set; }
         public DateTime dataTermino { get; set; }      
         public int? idContato { get; set; }
-
-        public Compromissos(string assunto, string local, string link, DateTime dataInicio, DateTime dataTermino, int idContato)
-        {
-            this.assunto = assunto;
-            this.local = local;
-            this.link = link;
-            this.dataInicio = dataInicio;
-            this.dataTermino = dataTermino;
-            this.idContato = idContato;
-        }
         public Compromissos(string assunto, string local, string link, DateTime dataInicio, DateTime dataTermino, string nome)
         {
             this.assunto = assunto;
